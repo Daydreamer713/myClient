@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../node_modules/vue/dist/vue.js"></script>
+  <script src="../node_modules/vue-resource/dist/vue-resource.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <h1>vue-resource插件笔记</h1>
+    <a href="javascript:;" v-on:click="get">Get</a>
+    <a href="javascript:;" @click="post">Post</a>
+    <a href="javascript:;" @click="jsonp">Jsonp</a>
+    <span>{{msg}}</span>
+  </div>
+</body>
+
+<script type="text/javascript">
+  new Vue({
+    el: "#app",
+    data: {
+      msg: ""
+    },
+    mounted: function () {
+      Vue.http.interceptors.push((request, next) => { //拦截器
+        console.log("请求前");
+        next(function (response) {
+          console.log("请求后.");
+          return response;
+        })
+      })
+    },
+    http: {
+      root: "http://localhost:5500/" // 配置全局路径
+    },
+    methods: {
+      get() {
+        // 因为引入cdn时，插件已挂载到vue实例上，this.$http 相当于 Vue.$http
+        this.$http.get("package.json", {
+          params: {
+            userId: "101"
+          },
+          headers: {
+            token: "abcd"
+          }
+        }).then(res => {
+          this.msg = res.data;
+        }, error => {
+          this.msg = error;
+        })
+      },
+      post() {
+        this.$http.post("package.json", {
+          userId: "102"
+        }, {
+          headers: {
+            access_token: "abc"
+          }
+        }).then(res => {
+          this.msg = res.data;
+        })
+      },
+      jsonp() { //跨域请求
+        this.$http.jsonp("http://localhost:8000/", {
+          params: {
+            word: "a"
+          }
+        }).then(res => {
+          this.msg = res.data;
+        })
+      }
+    }
+  })
+
+</script>
+
+</html>

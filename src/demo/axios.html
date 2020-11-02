@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axious</title>
+  <script src="../node_modules/vue/dist/vue.js"></script>
+  <script src="../node_modules/axios/dist/axios.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <h1>Axious插件笔记</h1>
+    <a href="javascript:;" v-on:click="get">Get</a>
+    <a href="javascript:;" @click="post">Post</a>
+    <a href="javascript:;" @click="http">http</a>
+    <span>{{msg}}</span>
+  </div>
+</body>
+<script type="text/javascript">
+  new Vue({
+    el: "#app",
+    data: {
+      msg: ''
+    },
+    mounted: function () {
+      axios.interceptors.request.use(function (config) { //拦截请求 config 回调
+        console.log("request init.")
+        return config;
+      })
+      axios.interceptors.response.use(function (response) {
+        console.log("response init.");
+        return response;
+      })
+    },
+    methods: {
+      get() { //axios 并没有挂在到Vue实例上，而是暴露出一个全局对象
+        axios.get("http://localhost:5500/", {
+          params: {
+            userId: '123'
+          },
+          headers: {
+            token: 'axios.get'
+          }
+        }).then(res => {
+          this.msg = res.data;
+        }).catch(function (error) { //请求失败时用 catch捕获
+          console.log("错误");
+        })
+      },
+      post() {
+        axios.post("http://localhost:5500/", {
+          userId: "888"
+        }, {
+          headers: {
+            token: "axios.post"
+          }
+        }).then(res => {
+          this.msg = res.data;
+        }).catch(err => {
+          console.log("405？呵呵");
+        })
+      },
+      http() { //写法类似jq的 ajax
+        axios({
+          url: "../package.json",
+          methods: "post", //post 发送的是请求体,在data里，get传params，拼接在url后面
+          data: {
+            userId: "101"
+          },
+          params: {
+            userId: "102"
+          },
+          headers: {
+            token: "http-test"
+          }
+        }).then(res => {
+          this.msg = res.data;
+        })
+      }
+    }
+  })
+
+</script>
+
+</html>
