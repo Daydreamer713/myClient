@@ -1,0 +1,20 @@
+{
+  "status": "0",
+  "msg": "",
+  "result": [{
+    "productId": "1001",
+    "productName": "小米六",
+    "productPrice": 2499,
+    "productImg": "1.jpg"
+  }, {
+    "productId": "1002",
+    "productName": "荣耀8",
+    "productPrice": 2499,
+    "productImg": "2.jpg"
+  }, {
+    "productId": "1003",
+    "productName": "苹果se",
+    "productPrice": 2699,
+    "productImg": "3.jpg"
+  }]
+}
